@@ -2,8 +2,8 @@ import { useState } from 'react';
 import Field from '../components/Field.jsx';
 import { supabase } from '../lib/supabase.js';
 
-export default function AuthPage() {
-  const [mode, setMode] = useState('login'); // login | signup | reset
+export default function AuthPage({ initialMode = 'login', onBack }) {
+  const [mode, setMode] = useState(initialMode); // login | signup | reset
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [msg, setMsg] = useState('');
@@ -23,8 +23,9 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-4">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4">
       <form onSubmit={submit} className="w-full max-w-sm space-y-4 rounded-lg bg-white p-6 shadow">
+        {onBack && <button type="button" onClick={onBack} className="text-sm text-slate-400 hover:text-slate-600">← Kembali</button>}
         <h1 className="text-xl font-bold text-indigo-700">Invoice Builder</h1>
         <p className="text-sm text-slate-500">{mode === 'login' ? 'Masuk ke akun Anda' : mode === 'signup' ? 'Buat akun baru' : 'Reset password'}</p>
         <Field label="Email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />

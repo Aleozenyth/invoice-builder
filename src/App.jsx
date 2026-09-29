@@ -7,6 +7,7 @@ import { useCloudStore, useLocalStore } from './lib/store.js';
 import { PlanContext } from './lib/PlanContext.js';
 import Sidebar from './components/Sidebar.jsx';
 import AuthPage from './pages/AuthPage.jsx';
+import LandingPage from './pages/LandingPage.jsx';
 import DocumentsPage from './pages/DocumentsPage.jsx';
 import DataPage from './pages/DataPage.jsx';
 import ReportsPage from './pages/ReportsPage.jsx';
@@ -54,6 +55,7 @@ function CloudGate({ user }) {
 
 export default function App() {
   const [session, setSession] = useState(undefined);
+  const [view, setView] = useState('landing'); // landing | login | signup
   useEffect(() => {
     if (!supabase) return;
     supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -63,5 +65,7 @@ export default function App() {
 
   if (!supabase) return <LocalGate />;
   if (session === undefined) return <p className="p-8 text-slate-500">Memuat…</p>;
-  return session ? <CloudGate key={session.user.id} user={session.user} /> : <AuthPage />;
+  if (session) return <CloudGate key={session.user.id} user={session.user} />;
+  if (view === 'landing') return <LandingPage onLogin={() => setView('login')} onSignup={() => setView('signup')} />;
+  return <AuthPage initialMode={view} onBack={() => setView('landing')} />;
 }
